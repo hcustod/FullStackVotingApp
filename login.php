@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Start session or redirect to user dashboard
         session_start();
         $_SESSION['username'] = $username;
-        header("Location: profile.php");
+        header("Location: create_topic.php");
         exit;
     } else {
         echo "Invalid credentials!";
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title> Login </title>
 </head>
 <body>
+
 <h1> Login </h1>
 <form method="post">
     <label>Username: </label>
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php if (isset($error)) {echo $error;} ?>
 
 <p> If you do not have an account, please <a href="register.php"> Register Here</a>. </p>
+
 </body>
 </html>
 

@@ -8,6 +8,7 @@ if (!isset($_SESSION['username'])) {
 // Include necessary files
 include 'db.config.php';
 include 'classes.php';
+include 'helperFunctions.php';
 
 // Initialize PDO
 $config = include 'db.config.php';
@@ -20,12 +21,8 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $topic = new Topic($pdo);
 
-// Handle logout
-if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
+
+
 
 // Fetch user ID
 $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
@@ -55,6 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Failed to create topic!";
     }
+}
+
+// Logout
+if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+    logout();
 }
 ?>
 

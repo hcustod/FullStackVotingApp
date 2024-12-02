@@ -1,6 +1,7 @@
 <?php
 include 'db.config.php';
 include 'classes.php';
+include 'helperFunctions.php';
 
 $config = include 'db.config.php';
 $pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
@@ -30,6 +31,11 @@ $totalUserVotes = count($votingUserHistory);
 
 // Determine current theme
 $currentTheme = isset($_SESSION['theme']) ? $_SESSION['theme'] : 'light';
+
+// Logout
+if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+    logout();
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +63,7 @@ $currentTheme = isset($_SESSION['theme']) ? $_SESSION['theme'] : 'light';
     <a href="create_topic.php">Dashboard</a>
     <a href="vote.php">Topics</a>
     <a href="profile.php">Profile</a>
-    <a href="logout.php">Logout</a>
+    <a href="create_topic.php?logout=true"">Logout</a>
 </nav>
 
 <p>Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>

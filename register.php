@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $result = $user->registerUser($username, $email, $password);
     if ($result === true) {
-        echo "Registration successful!";
+        header("location: create_topic.php");
     } else {
         echo "Registration failed! Reason: " . $result;
     }
@@ -47,5 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <p>If you already have an account, please <a href="login.php">Login Here</a>.</p>
+
 </body>
 </html>

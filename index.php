@@ -11,6 +11,7 @@ $pdo = new PDO(
     $config['app']['username'],
     $config['app']['password']
 );
+
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 if (isset($_SESSION['username'])) {
