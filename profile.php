@@ -8,32 +8,34 @@ $pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbna
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['username']))
+{
     die("You must be logged in to view your profile.");
 }
 
 $username = $_SESSION['username'];
 
-// Fetch user ID
-$stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
-$stmt->execute([':username' => $username]);
-$userId = $stmt->fetchColumn();
+// Get user ID
+$SQLQuery = $pdo->prepare("SELECT id FROM users WHERE username = :username");
+$SQLQuery->execute([':username' => $username]);
+$userId = $SQLQuery->fetchColumn();
 
-// Fetch user-created topics
+// Get user topics
 $topic = new Topic($pdo);
 $createdTopics = $topic->getCreatedTopics($userId);
 $totalUserTopicsCreated = count($createdTopics);
 
-// Fetch user voting history
+// Get user voting history
 $vote = new Vote($pdo);
 $votingUserHistory = $vote->getUserVoteHistory($userId);
 $totalUserVotes = count($votingUserHistory);
 
-// Determine current theme
+// Get current theme
 $currentTheme = isset($_SESSION['theme']) ? $_SESSION['theme'] : 'light';
 
 // Logout
-if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+if (isset($_GET['logout']) && $_GET['logout'] === 'true')
+{
     logout();
 }
 ?>
@@ -72,9 +74,11 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
 <h2>Your Topics</h2>
 <?php if (!empty($createdTopics)): ?>
     <ul>
+
         <?php foreach ($createdTopics as $t): ?>
             <li><?php echo htmlspecialchars($t['title']); ?> - <?php echo htmlspecialchars($t['description']); ?></li>
         <?php endforeach; ?>
+
     </ul>
 <?php else: ?>
     <p>No topics created yet.</p>
@@ -84,15 +88,17 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
 <?php if (!empty($votingUserHistory)): ?>
     <ul>
         <?php foreach ($votingUserHistory as $userHis): ?>
+
             <li>
                 <p>Title: <?php echo htmlspecialchars($userHis['title']); ?></p>
                 <p>Description: <?php echo htmlspecialchars($userHis['description']); ?></p>
                 <p>Vote: <?php echo htmlspecialchars($userHis['vote_type']); ?></p>
             </li>
+
         <?php endforeach; ?>
     </ul>
 <?php else: ?>
-    <p>You have not voted on any topics yet. Please vote on topics to see results!</p>
+    <p>You have not voted on any topics yet. Please vote on topics to see some results!</p>
 <?php endif; ?>
 
 <div class="theme-toggle">

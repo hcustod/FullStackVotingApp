@@ -1,61 +1,62 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['username']))
+{
     header('Location: login.php');
     exit();
 }
 
-// Include necessary files
 include 'db.config.php';
 include 'classes.php';
 include 'helperFunctions.php';
 
 // Initialize PDO
 $config = include 'db.config.php';
-$pdo = new PDO(
-    "mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}",
-    $config['app']['username'],
-    $config['app']['password']
-);
+$pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $topic = new Topic($pdo);
 
-
-
-
-// Fetch user ID
+// Fetch user ID handler
 $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
 $stmt->execute([':username' => $_SESSION['username']]);
 $userId = $stmt->fetchColumn();
 
-// Handle theme switching
-if (isset($_GET['theme'])) {
+// Theme switching
+if (isset($_GET['theme']))
+{
     $theme = $_GET['theme'];
-    if ($theme == 'light' || $theme == 'dark') {
-        setcookie('theme', $theme, time() + (86400 * 30), '/'); // Save theme preference in a cookie
+    if ($theme == 'light' || $theme == 'dark')
+    {
+        setcookie('theme', $theme, time() + (86400 * 30), '/');
         header('Location: create_topic.php');
         exit();
     }
 }
+
 $currentTheme = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : 'light';
 
-// Handle topic creation
+// Topic creation handler
 $error = null;
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST")
+{
     $title = $_POST["title"];
     $description = $_POST["description"];
 
-    if ($topic->createTopic($userId, $title, $description)) {
+    if ($topic->createTopic($userId, $title, $description))
+    {
         header("Location: vote.php");
         exit();
-    } else {
+    }
+    else
+    {
         $error = "Failed to create topic!";
     }
 }
 
-// Logout
-if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+// Logout handler
+if (isset($_GET['logout']) && $_GET['logout'] === 'true')
+{
     logout();
 }
 ?>

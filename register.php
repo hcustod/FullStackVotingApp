@@ -3,24 +3,24 @@ include 'db.config.php';
 include 'classes.php';
 
 $config = include 'db.config.php';
-$pdo = new PDO(
-    "mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}",
-    $config['app']['username'],
-    $config['app']['password']
-);
+$pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $user = new User($pdo);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST')
+{
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     $result = $user->registerUser($username, $email, $password);
-    if ($result === true) {
+    if ($result === true)
+    {
         header("location: create_topic.php");
-    } else {
+    }
+    else
+    {
         echo "Registration failed! Reason: " . $result;
     }
 }
