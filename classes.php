@@ -294,6 +294,7 @@ class TimeFormatter implements TimestampFormatterInterface
 {
     public static function formatTimestamp($timestamp)
     {
+        date_default_timezone_set("America/Toronto");
         $difference = time() - $timestamp;
 
         if ($difference < 60) {

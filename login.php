@@ -35,7 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 </head>
 <body>
 
-<h1> Login </h1>
+    <h1> Login </h1>
+
+    <br>
+    <p><a href="index.php">Return to Main Menu</a></p>
+    <br>
+
+
 <form method="post">
     <label>Username: </label>
     <input type="text" name="username" required>

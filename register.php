@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 <body>
 <h1>Register</h1>
 
+<br>
+<p><a href="index.php">Return to Main Menu</a></p>
+<br>
+
 <form method="post">
     <label>Username:</label>
     <input type="text" name="username" required>
