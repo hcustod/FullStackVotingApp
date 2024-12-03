@@ -1,7 +1,7 @@
 <?php
 // Replace with your YouTube video link and SQL backup file path
-$youtubeVideo = "https://youtu.be/your_video_link";
-$sqlBackup = "./sqlbackup.sql";
+$youtubeVideo = "https://www.youtube.com/watch?v=9PbKa5J9iTE";
+$sqlBackup = "./sqlbackup.txt";
 ?>
 
 
