@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
     else
     {
-        echo "Registration failed! Reason: " . $result;
+        echo "Registration failed!";
     }
 }
 ?>

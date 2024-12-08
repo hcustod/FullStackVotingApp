@@ -28,9 +28,9 @@ interface TimestampFormatterInterface
 
 // ----------------- Classes ------------------------
 /*
- * Classes are not implemented here to carry or modify data internally.
- * Rather the classes provide the requested methods which act upon the PDO objects and database directly;
- * Encapsulating properties here then seemed unnecessary given data can be passed directly into the parameters for the methods
+ * Classes are not implemented here to carry or modify data internally except for the Topic class.
+ * Other classes provide the requested methods which act upon the PDO objects and database directly;
+ * Encapsulating properties for them seemed unnecessary given data can be passed directly into the parameters for the methods
  * and immediately then used in SQL queries.
  */
 
@@ -51,19 +51,22 @@ class User implements UserActionsInterface
         // Check for empty input
         if (empty($username))
         {
-            return "Username cannot be empty.";
+            echo "Username cannot be empty.";
+            return false;
         }
 
         // Email check using PHP Email constant filter; easy check for valid email.
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
         {
-            return "Invalid email format.";
+            echo "Invalid email format.";
+            return false;
         }
 
         // Check for password being below 9 characters; provide error prompt to user.
         if (strlen($password) < 9)
         {
-            return "Password must be at least 9 characters long.";
+            echo "Password must be at least 9 characters long.";
+            return false;
         }
 
         // A built-in function for hashing, so user passwords are not stored as clear text.
@@ -72,7 +75,7 @@ class User implements UserActionsInterface
         // Try inserting the user into the database & return true if successful
         try
         {
-            $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+            $stmt = $this->pdo->prepare("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password)");
             $stmt->execute([':username' => $username, ':email' => $email, ':password' => $hashedPassword,]);
             return true;
         }
@@ -80,9 +83,12 @@ class User implements UserActionsInterface
         {
             if ($e->getCode() == 23000)  // 23000 is a SQLSTATECODE; Represents an Integrity Constraint Violation.
             {
-                return "Username or email already exists.";
+                echo "Username or email already exists.";
+                return false;
+
             }
-            return "Database error: " . $e->getMessage();
+            echo "Database error: " . $e->getMessage();
+            return false;
         }
     }
 
@@ -91,7 +97,7 @@ class User implements UserActionsInterface
     {
         try
         {
-            $authSQLQUERY = $this->pdo->prepare("SELECT password FROM users WHERE username = :username");
+            $authSQLQUERY = $this->pdo->prepare("SELECT password FROM Users WHERE username = :username");
             $authSQLQUERY->execute([':username' => $username]);
             $user = $authSQLQUERY->fetch(PDO::FETCH_ASSOC);
 
@@ -111,6 +117,25 @@ class User implements UserActionsInterface
 class Topic
 {
     private $pdo;
+    public $id;
+    public $userId;
+    public $title;
+    public $description;
+    public $createdAt;
+
+    /*
+    // Getters and Setters
+    public function getTopicId() { return $this->id; }
+    public function getUserId() { return $this->userId; }
+    public function getTitle() { return $this->title; }
+    public function getDescription() { return $this->description; }
+    public function getCreatedAt() { return $this->createdAt; }
+    public function setId($topicId) { $this->id = $topicId; }
+    public function setUserId($userId) { $this->userId = $userId; }
+    public function setTitle($title) { $this->title = $title; }
+    public function setDescription($description) { $this->description = $description; }
+    public function setCreatedAt($createdAt) { $this->createdAt = $createdAt; }
+    */
 
     public function __construct(PDO $pdo)
     {
@@ -124,28 +149,62 @@ class Topic
             return false;
         }
 
-        $createTopicSQLQuery = $this->pdo->prepare("INSERT INTO topics (user_id, title, description) VALUES (:user_id, :title, :description)");
-        if ($createTopicSQLQuery->execute([':user_id' => $userId, ':title' => $title, ':description' => $description,]))
-        {
-            return true;
+        try {
+            $createTopicSQLQuery = $this->pdo->prepare("INSERT INTO Topics (user_id, title, description, created_at) VALUES (:user_id, :title, :description, NOW())");
+            return $createTopicSQLQuery->execute(['user_id' => $userId, 'title' => $title, 'description' => $description]);
         }
-        else
-        {
+        catch (PDOException $e) {
             return false;
         }
     }
 
     public function getTopics(): array
     {
-        $getTopicSQLQuery = $this->pdo->query("SELECT id, title, description, created_at FROM topics");
-        return $getTopicSQLQuery->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->query("SELECT id, user_id, title, description, created_at FROM Topics");
+            $topics = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $topic = new Topic($this->pdo);
+                $topic->id = $row['id'];
+                $topic->userId = $row['user_id'];
+                $topic->title = $row['title'];
+                $topic->description = $row['description'];
+                $topic->createdAt = $row['created_at'];
+                $topics[] = $topic;
+            }
+            return $topics;
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
+            return [];
+        }
     }
 
     public function getCreatedTopics($userId): array
     {
-        $getUserCreatedTopicsSQLQuery = $this->pdo->prepare("SELECT id, title, description FROM topics WHERE user_id = :user_id");
-        $getUserCreatedTopicsSQLQuery->execute([':user_id' => $userId]);
-        return $getUserCreatedTopicsSQLQuery->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $getUserCreatedTopicsSQLQuery = $this->pdo->prepare("SELECT id, user_id, title, description, created_at FROM Topics WHERE user_id = :user_id");
+            $getUserCreatedTopicsSQLQuery->execute([':user_id' => $userId]);
+
+            return $getUserCreatedTopicsSQLQuery->fetchAll(PDO::FETCH_ASSOC);
+
+            /*
+            $topics = [];
+
+            while ($row = $getUserCreatedTopicsSQLQuery->fetch(PDO::FETCH_ASSOC)) {
+                $topic = new Topic($this->pdo);
+                $topic->id = $row['id'];
+                $topic->userId = $row['user_id'];
+                $topic->title = $row['title'];
+                $topic->description = $row['description'];
+                $topic->createdAt = $row['created_at'];
+                $topics[] = $topic;
+            }
+            return $topics;
+            */
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
+            return [];
+        }
     }
 }
 
@@ -170,7 +229,7 @@ class Vote implements VotingInterface
 
         try
         {
-            $voteSQLQuery = $this->pdo->prepare("INSERT INTO votes (user_id, topic_id, vote_type, voted_at) 
+            $voteSQLQuery = $this->pdo->prepare("INSERT INTO Votes (user_id, topic_id, vote_type, voted_at) 
                                                 VALUES (:user_id, :topic_id, :vote_type, NOW())");
             $voteSQLQuery->execute([
                 ':user_id' => $userId,
@@ -192,7 +251,7 @@ class Vote implements VotingInterface
     {
         try
         {
-            $hasVotedSQLQuery = $this->pdo->prepare("SELECT COUNT(*) FROM votes WHERE topic_id = :topic_id AND user_id = :user_id");
+            $hasVotedSQLQuery = $this->pdo->prepare("SELECT COUNT(*) FROM Votes WHERE topic_id = :topic_id AND user_id = :user_id");
             $hasVotedSQLQuery->execute([
                 ':topic_id' => $topicId,
                 ':user_id' => $userId,
@@ -212,8 +271,8 @@ class Vote implements VotingInterface
     {
         try
         {
-            $userVoteHistSQLQuery = $this->pdo->prepare("SELECT v.topic_id, v.vote_type, v.voted_at, t.title, t.description FROM votes v
-                                        JOIN topics t ON v.topic_id = t.id WHERE v.user_id = :user_id ORDER BY v.voted_at DESC");
+            $userVoteHistSQLQuery = $this->pdo->prepare("SELECT v.topic_id, v.vote_type, v.voted_at, t.title, t.description FROM Votes v
+                                        JOIN Topics t ON v.topic_id = t.id WHERE v.user_id = :user_id ORDER BY v.voted_at DESC");
             $userVoteHistSQLQuery->execute([':user_id' => $userId]);
             return $userVoteHistSQLQuery->fetchAll(PDO::FETCH_ASSOC); // Return vote history as associative array; FETCH_ASSOC is predefined php constant
         }
@@ -226,7 +285,7 @@ class Vote implements VotingInterface
 
     public function getTopicVoteCount($topicId)
     {
-        $topicVCountSQLQuery = $this->pdo->prepare("SELECT vote_type, COUNT(*) as count FROM votes 
+        $topicVCountSQLQuery = $this->pdo->prepare("SELECT vote_type, COUNT(*) as count FROM Votes 
                                     WHERE topic_id = :topic_id GROUP BY vote_type");
         $topicVCountSQLQuery->execute([':topic_id' => $topicId]);
 
@@ -251,7 +310,7 @@ class Comment implements CommentInterface
         $this->pdo = $pdo;
     }
 
-    public function addComment($userId, $topicId, $comment)
+    public function addComment($userId, $topicId, $comment): bool
     {
         if (empty($comment))
         {
@@ -260,8 +319,7 @@ class Comment implements CommentInterface
 
         try
         {
-            $addCommentSQLQuery = $this->pdo->prepare("INSERT INTO comments (user_id, topic_id, comment, commented_at)
-                                                VALUES (:user_id, :topic_id, :comment, NOW())");
+            $addCommentSQLQuery = $this->pdo->prepare("INSERT INTO Comments (user_id, topic_id, comment, commented_at) VALUES (:user_id, :topic_id, :comment, NOW())");
             return $addCommentSQLQuery->execute([':user_id' => $userId, ':topic_id' => $topicId, ':comment' => $comment,]);
         }
         catch (PDOException $e)
@@ -272,13 +330,13 @@ class Comment implements CommentInterface
     }
 
     // Retrieve all comments for single topic
-    public function getComments($topicId)
+    public function getComments($topicId): array
     {
         try
         {
-            $getCommentsSQLQuery = $this->pdo->prepare("SELECT c.comment, c.commented_at, u.username FROM comments c
-                                                JOIN users u ON c.user_id = u.id WHERE c.topic_id = :topic_id
-                                                ORDER BY c.commented_at DESC ");
+            $getCommentsSQLQuery = $this->pdo->prepare("SELECT c.comment, c.commented_at, u.username FROM Comments c
+                                                            JOIN Users u ON c.user_id = u.id WHERE c.topic_id = :topic_id
+                                                             ORDER BY c.commented_at DESC ");
             $getCommentsSQLQuery->execute([':topic_id' => $topicId]);
             return $getCommentsSQLQuery->fetchAll(PDO::FETCH_ASSOC);
         }

@@ -18,7 +18,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $topic = new Topic($pdo);
 
 // Fetch user ID handler
-$stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
+$stmt = $pdo->prepare("SELECT id FROM Users WHERE username = :username");
 $stmt->execute([':username' => $_SESSION['username']]);
 $userId = $stmt->fetchColumn();
 

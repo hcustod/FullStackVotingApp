@@ -16,7 +16,7 @@ if (!isset($_SESSION['username']))
 $username = $_SESSION['username'];
 
 // Get user ID
-$SQLQuery = $pdo->prepare("SELECT id FROM users WHERE username = :username");
+$SQLQuery = $pdo->prepare("SELECT id FROM Users WHERE username = :username");
 $SQLQuery->execute([':username' => $username]);
 $userId = $SQLQuery->fetchColumn();
 

@@ -14,7 +14,7 @@ if (!isset($_SESSION['username']))
 }
 
 $username = $_SESSION['username'];
-$SQLQuery = $pdo->prepare("SELECT id FROM users WHERE username = :username");
+$SQLQuery = $pdo->prepare("SELECT id FROM Users WHERE username = :username");
 $SQLQuery->execute([':username' => $username]);
 $userId = $SQLQuery->fetchColumn();
 
@@ -70,27 +70,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'], $_POST['to
 
         <div style="border: 1px solid gray; margin-bottom: 20px; padding: 10px;">
 
-            <h3><?php echo htmlspecialchars($t['title']); ?></h3>
-            <p><?php echo htmlspecialchars($t['description']); ?></p>
-            <p><strong>Created:</strong> <?php echo TimeFormatter::formatTimestamp(strtotime($t['created_at'])); ?></p>
+            <h3><?php echo htmlspecialchars($t->title); ?></h3>
+            <p><?php echo htmlspecialchars($t->description); ?></p>
+            <p><strong>Created:</strong> <?php echo TimeFormatter::formatTimestamp(strtotime($t->createdAt)); ?></p>
 
             <!-------------- Votes ---------------->
-            <?php $votes = $vote->getTopicVoteCount($t['id']); ?>
+            <?php $votes = $vote->getTopicVoteCount($t->id); ?>
             <p><strong>Votes:</strong> Upvotes: <?php echo $votes['up']; ?>, Downvotes: <?php echo $votes['down']; ?></p>
 
             <form method="post" style="display: inline;">
-                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t['id']); ?>">
+                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
                 <button type="submit" name="voteType" value="up">Upvote</button>
             </form>
             <form method="post" style="display: inline;">
-                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t['id']); ?>">
+                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
                 <button type="submit" name="voteType" value="down">Downvote</button>
             </form>
 
             <!-------------- Comments ---------------->
             <h4>Comments</h4>
             <?php
-            $comments = $comment->getComments($t['id']);
+            $comments = $comment->getComments($t->id);
             if (!empty($comments)): ?>
                 <ul>
                     <?php foreach ($comments as $c): ?>
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'], $_POST['to
             <!-------------- Add comments  ---------------->
             <form method="post">
                 <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-                <input type="hidden" name="topic_id" value="<?php echo htmlspecialchars($t['id']); ?>">
+                <input type="hidden" name="topic_id" value="<?php echo htmlspecialchars($t->id); ?>">
                 <button type="submit">Add Comment</button>
             </form>
         </div>
