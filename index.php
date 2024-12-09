@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <h1>Welcome to Hank's Voting App!</h1>
+    <h1>Welcome to Hank & Fit's Voting App!</h1>
     <br>
     <p><a href="login.php">Login</a></p>
     <br>
