@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"VotingAppTest::testRegisterUserWithValidData":0.14,"VotingAppTest::testRegisterDuplicateUser":0.198}}

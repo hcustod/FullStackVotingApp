@@ -1,16 +1,7 @@
 <?php
 return [
     'app' => [
-        'host' => 'localhost',
-        'username' => 'f4497015_mainUser',
-        'password' => 'password123456',
-        'dbname' => 'f4497015_projectActual'
-    ],
-    'test' => [
-        'host' => 'localhost',
-        'username' => 'f4497015_mainUser',
-        'password' => 'password123456',
-        'dbname' => 'f4497015_unitTestDB'
-    ],
+        'database_path' => __DIR__ . '/Database/main.sqlite',
+    ]
 ];
 

@@ -12,8 +12,17 @@ include 'helperFunctions.php';
 
 // Initialize PDO
 $config = include 'db.config.php';
-$pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+try
+{
+    $pdo = new PDO("sqlite:{$config['app']['database_path']}");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+}
+catch (PDOException $e)
+{
+    die("Connection failed: " . $e->getMessage());
+}
 
 $topic = new Topic($pdo);
 
@@ -40,17 +49,24 @@ $currentTheme = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : 'light';
 $error = null;
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-    $title = $_POST["title"];
-    $description = $_POST["description"];
+    $title = trim($_POST["title"]);
+    $description = trim($_POST["description"]);
 
-    if ($topic->createTopic($userId, $title, $description))
-    {
-        header("Location: vote.php");
-        exit();
+    if (empty($title) || empty($description)) {
+        $error = "Title and description cannot be empty!";
     }
     else
     {
-        $error = "Failed to create topic!";
+        if ($topic->createTopic($userId, $title, $description))
+        {
+            header("Location: vote.php");
+            exit();
+        }
+        else
+        {
+            var_dump($pdo->errorInfo());
+            $error = "Failed to create topic!";
+        }
     }
 }
 

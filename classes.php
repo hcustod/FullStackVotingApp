@@ -150,7 +150,7 @@ class Topic
         }
 
         try {
-            $createTopicSQLQuery = $this->pdo->prepare("INSERT INTO Topics (user_id, title, description, created_at) VALUES (:user_id, :title, :description, NOW())");
+            $createTopicSQLQuery = $this->pdo->prepare("INSERT INTO Topics (user_id, title, description, created_at) VALUES (:user_id, :title, :description, CURRENT_TIMESTAMP)");
             return $createTopicSQLQuery->execute(['user_id' => $userId, 'title' => $title, 'description' => $description]);
         }
         catch (PDOException $e) {
@@ -230,7 +230,7 @@ class Vote implements VotingInterface
         try
         {
             $voteSQLQuery = $this->pdo->prepare("INSERT INTO Votes (user_id, topic_id, vote_type, voted_at) 
-                                                VALUES (:user_id, :topic_id, :vote_type, NOW())");
+                                                VALUES (:user_id, :topic_id, :vote_type, CURRENT_TIMESTAMP)");
             $voteSQLQuery->execute([
                 ':user_id' => $userId,
                 ':topic_id' => $topicId,
@@ -319,7 +319,7 @@ class Comment implements CommentInterface
 
         try
         {
-            $addCommentSQLQuery = $this->pdo->prepare("INSERT INTO Comments (user_id, topic_id, comment, commented_at) VALUES (:user_id, :topic_id, :comment, NOW())");
+            $addCommentSQLQuery = $this->pdo->prepare("INSERT INTO Comments (user_id, topic_id, comment, commented_at) VALUES (:user_id, :topic_id, :comment, CURRENT_TIMESTAMP)");
             return $addCommentSQLQuery->execute([':user_id' => $userId, ':topic_id' => $topicId, ':comment' => $comment,]);
         }
         catch (PDOException $e)
@@ -352,7 +352,11 @@ class TimeFormatter implements TimestampFormatterInterface
 {
     public static function formatTimestamp($timestamp)
     {
-        date_default_timezone_set("America/Toronto");
+        // Sets default timezone for PHP.
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+        }
+
         $difference = time() - $timestamp;
 
         if ($difference < 60) {

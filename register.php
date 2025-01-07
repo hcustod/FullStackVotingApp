@@ -3,8 +3,17 @@ include 'db.config.php';
 include 'classes.php';
 
 $config = include 'db.config.php';
-$pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+try
+{
+    $pdo = new PDO("sqlite:{$config['app']['database_path']}");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+}
+catch (PDOException $e)
+{
+    die("Connection failed: " . $e->getMessage());
+}
 
 $user = new User($pdo);
 
@@ -18,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     if ($result === true)
     {
         header("location: create_topic.php");
+        exit;
     }
     else
     {

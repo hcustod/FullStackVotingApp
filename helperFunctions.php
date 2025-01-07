@@ -1,6 +1,5 @@
 <?php
 
-
 // Returns the user to the login screen
 function logout()
 {
@@ -9,6 +8,4 @@ function logout()
     header("location: ./login.php");
     exit;
 }
-
-?>
 

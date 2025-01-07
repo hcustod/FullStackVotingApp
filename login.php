@@ -3,8 +3,17 @@ include 'db.config.php';
 include 'classes.php';
 
 $dbConfig = include 'db.config.php';
-$pdo = new PDO("mysql:host={$dbConfig['app']['host']};dbname={$dbConfig['app']['dbname']}", $dbConfig['app']['username'], $dbConfig['app']['password']);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+try
+{
+    $pdo = new PDO("sqlite:{$dbConfig['app']['database_path']}");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+}
+catch (PDOException $e)
+{
+    die("Connection failed: " . $e->getMessage());
+}
 
 $user = new User($pdo);
 
@@ -15,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
     if ($user->authenticateUser($username, $password))
     {
-        echo "Login successful!";
         // Start session or redirect to user dashboard
         session_start();
         $_SESSION['username'] = $username;

@@ -1,17 +1,34 @@
 <?php
+ob_start();
 include 'db.config.php';
 include 'classes.php';
 include 'helperFunctions.php';
 
-$config = include 'db.config.php';
-$pdo = new PDO("mysql:host={$config['app']['host']};dbname={$config['app']['dbname']}", $config['app']['username'], $config['app']['password']);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Session setup
+if (session_status() == PHP_SESSION_NONE)
+{
+    session_start();
+}
 
-session_start();
 if (!isset($_SESSION['username']))
 {
     die("You must be logged in to view your profile.");
 }
+
+// Sqlite db setup
+$config = include 'db.config.php';
+
+try
+{
+    $pdo = new PDO("sqlite:{$config['app']['database_path']}");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+}
+catch (PDOException $e)
+{
+    die("Connection failed: " . $e->getMessage());
+}
+
 
 $username = $_SESSION['username'];
 

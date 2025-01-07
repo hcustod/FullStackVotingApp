@@ -11,9 +11,6 @@
     <br>
     <p><a href="register.php">Register Now</a></p>
     <br>
-    <p><a href="https://f4510623.gblearn.com/comp1230/assignments/Project">Fitsum's Application Deployment</a></p>
-    <br>
-    <p><a href="professor.php">Professor's Page</a></p>
 
 </body>
 </html>
