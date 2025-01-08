@@ -9,3 +9,8 @@ function logout()
     exit;
 }
 
+function captialize($string)
+{
+    $returnString = ucfirst($string);
+    return $returnString;
+}

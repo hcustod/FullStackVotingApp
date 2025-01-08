@@ -1,0 +1,34 @@
+.btn-xl {
+    padding: 30px 60px;
+    font-size: 2.5rem;
+    width: 40rem;
+    border-radius: 0.5rem;
+}
+
+.title-text {
+    font-size: 4.0rem;
+}
+
+/* Label and Text Input Styles */
+
+.big-label-text {
+    font-size: 2.5rem;
+}
+
+.wide-input-field {
+    width: 40rem;
+    height: 5rem;
+    font-size: 4rem;
+}
+
+.wide-tall-input-field {
+    width: 40rem;
+    height: 10rem;
+    font-size: 3rem;
+}
+
+/* Nav styles */
+
+.large-nav-links {
+    font-size: 2rem;
+}

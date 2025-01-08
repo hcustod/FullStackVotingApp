@@ -96,33 +96,46 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
             }
         </style>
     <?php endif; ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
 </head>
 <body>
-<h1>Welcome, <?php echo htmlspecialchars($_SESSION["username"]); ?></h1>
-<nav>
-    <a href="create_topic.php">Dashboard</a>
-    <a href="vote.php">Topics</a>
-    <a href="profile.php">Profile</a>
-    <a href="create_topic.php?logout=true">Logout</a>
-</nav>
 
-<h1>Create a New Topic</h1>
-<?php if ($error): ?>
-    <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
-<?php endif; ?>
-<form method="post">
-    <label>Title: </label>
-    <input type="text" name="title" required>
-    <br>
-    <label>Description: </label>
-    <textarea name="description" required></textarea>
-    <br>
-    <input type="submit" value="Create Topic">
-</form>
+    <div class="container mt-5">
+        <div class="border border-5">
+            <h1 class="text-secondary text-center mb-0 p-4 title-text">Welcome, <?php echo htmlspecialchars(captialize($_SESSION["username"])); ?>!</h1>
+        </div>
+        <br>
 
-<div class="theme-toggle">
-    <p>Themes:</p>
-    <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a>
-</div>
+        <nav class="text-center">
+            <a class="large-nav-links p-2" href="create_topic.php">Dashboard</a>
+            <a class="large-nav-links p-2" href="vote.php">Topics</a>
+            <a class="large-nav-links p-2" href="profile.php">Profile</a>
+            <a class="large-nav-links p-2" href="create_topic.php?logout=true">Logout</a>
+        </nav>
+
+        <h1 class="text-secondary">Create a New Topic:</h1>
+        <?php if ($error): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
+
+        <form class="text-center" method="post">
+            <label class="big-label-text text-primary">Title: </label>
+            <br>
+            <input class="wide-input-field" type="text" name="title" required>
+            <br>
+            <label class="big-label-text text-primary mt-2">Description: </label>
+            <br>
+            <textarea class="wide-tall-input-field" name="description" required></textarea>
+            <br>
+            <input class="btn btn-primary mt-5 mb-1 btn-xl" type="submit" value="Create Topic">
+        </form>
+
+        <div class="text-secondary">
+            <p>Themes: <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a> </p>
+
+        </div>
+
+    </div>
 </body>
 </html>

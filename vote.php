@@ -1,6 +1,7 @@
 <?php
 include 'db.config.php';
 include 'classes.php';
+include 'helperFunctions.php';
 
 $config = include 'db.config.php';
 
@@ -53,16 +54,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'], $_POST['to
 <html>
 <head>
     <title>Topics & Comments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
 </head>
 <body>
-<h1>Welcome, <?php echo htmlspecialchars($username); ?>!</h1>
 
-<nav>
-    <a href="create_topic.php">Dashboard</a>
-    <a href="vote.php">Topics</a>
-    <a href="profile.php">Profile</a>
-    <a href="create_topic.php?logout=true">Logout</a>
-</nav>
+    <div class="container mt-5">
+        <div class="border border-5 position-relative">
+            <h1 class="text-secondary text-center mb-0 p-4 title-text">Welcome, <?php echo htmlspecialchars(captialize($username)); ?>!</h1>
+        </div>
+
+        <nav>
+            <a href="create_topic.php">Dashboard</a>
+            <a href="vote.php">Topics</a>
+            <a href="profile.php">Profile</a>
+            <a href="create_topic.php?logout=true">Logout</a>
+        </nav>
+
+
+    </div>
+
+
+
+
+
 
 <?php if (isset($voteMessage)): ?>
     <p><?php echo htmlspecialchars($voteMessage); ?></p>
