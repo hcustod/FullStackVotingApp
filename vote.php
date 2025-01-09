@@ -64,83 +64,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'], $_POST['to
             <h1 class="text-secondary text-center mb-0 p-4 title-text">Welcome, <?php echo htmlspecialchars(captialize($username)); ?>!</h1>
         </div>
 
-        <nav>
-            <a href="create_topic.php">Dashboard</a>
-            <a href="vote.php">Topics</a>
-            <a href="profile.php">Profile</a>
-            <a href="create_topic.php?logout=true">Logout</a>
+        <nav class="text-center">
+            <a class="large-nav-links p-2" href="create_topic.php">Dashboard</a>
+            <a class="large-nav-links p-2" href="vote.php">Topics</a>
+            <a class="large-nav-links p-2" href="profile.php">Profile</a>
+            <a class="large-nav-links p-2" href="create_topic.php?logout=true">Logout</a>
         </nav>
 
 
+        <?php if (isset($voteMessage)): ?>
+            <p><?php echo htmlspecialchars($voteMessage); ?></p>
+        <?php endif; ?>
+
+        <?php if (isset($commentMessage)): ?>
+            <p><?php echo htmlspecialchars($commentMessage); ?></p>
+        <?php endif; ?>
+
+        <h2 class="text-secondary">Topics</h2>
+
+        <?php if (!empty($topics)): ?>
+            <?php foreach ($topics as $t): ?>
+
+                <div style="border: 1px solid gray; margin-bottom: 20px; padding: 10px;">
+
+                    <h2> <strong class="text-secondary"> Title: </strong> <?php echo htmlspecialchars(captialize($t->title)); ?> </h2>
+                    <h2> <strong class="text-secondary"> Description: </strong> <?php echo htmlspecialchars($t->description); ?> </h2>
+                    <p><strong>Created:</strong> <?php echo TimeFormatter::formatTimestamp(strtotime($t->createdAt)); ?></p>
+
+                    <!-------------- Votes ---------------->
+                    <?php $votes = $vote->getTopicVoteCount($t->id); ?>
+                    <p><strong>Votes:</strong> Upvotes: <?php echo $votes['up']; ?>, Downvotes: <?php echo $votes['down']; ?></p>
+
+                    <form method="post" style="display: inline;">
+                        <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
+                        <button class="btn btn-primary" type="submit" name="voteType" value="up">Upvote</button>
+                    </form>
+                    <form method="post" style="display: inline;">
+                        <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
+                        <button class="btn btn-primary" type="submit" name="voteType" value="down">Downvote</button>
+                    </form>
+
+                    <!-------------- Comments ---------------->
+                    <h4>Comments</h4>
+                    <?php
+                    $comments = $comment->getComments($t->id);
+                    if (!empty($comments)): ?>
+                        <ul>
+                            <?php foreach ($comments as $c): ?>
+
+                                <li>
+                                    <strong><?php echo htmlspecialchars($c['username']); ?>:</strong>
+                                    <?php echo htmlspecialchars($c['comment']); ?>
+                                    <em>(<?php echo TimeFormatter::formatTimestamp(strtotime($c['commented_at'])); ?>)</em>
+                                </li>
+
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No comments yet. Be the first to comment!</p>
+                    <?php endif; ?>
+
+                    <!-------------- Add comments  ---------------->
+                    <form method="post">
+                        <textarea name="comment" placeholder="Write your comment here..." required></textarea>
+                        <input type="hidden" name="topic_id" value="<?php echo htmlspecialchars($t->id); ?>">
+                        <br>
+                        <button class="btn btn-primary" type="submit">Add Comment</button>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No topics available. Create a topic to get started!</p>
+        <?php endif; ?>
+
     </div>
-
-
-
-
-
-
-<?php if (isset($voteMessage)): ?>
-    <p><?php echo htmlspecialchars($voteMessage); ?></p>
-<?php endif; ?>
-
-<?php if (isset($commentMessage)): ?>
-    <p><?php echo htmlspecialchars($commentMessage); ?></p>
-<?php endif; ?>
-
-<h2>Topics</h2>
-
-<?php if (!empty($topics)): ?>
-    <?php foreach ($topics as $t): ?>
-
-        <div style="border: 1px solid gray; margin-bottom: 20px; padding: 10px;">
-
-            <h3><?php echo htmlspecialchars($t->title); ?></h3>
-            <p><?php echo htmlspecialchars($t->description); ?></p>
-            <p><strong>Created:</strong> <?php echo TimeFormatter::formatTimestamp(strtotime($t->createdAt)); ?></p>
-
-            <!-------------- Votes ---------------->
-            <?php $votes = $vote->getTopicVoteCount($t->id); ?>
-            <p><strong>Votes:</strong> Upvotes: <?php echo $votes['up']; ?>, Downvotes: <?php echo $votes['down']; ?></p>
-
-            <form method="post" style="display: inline;">
-                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
-                <button type="submit" name="voteType" value="up">Upvote</button>
-            </form>
-            <form method="post" style="display: inline;">
-                <input type="hidden" name="topicID" value="<?php echo htmlspecialchars($t->id); ?>">
-                <button type="submit" name="voteType" value="down">Downvote</button>
-            </form>
-
-            <!-------------- Comments ---------------->
-            <h4>Comments</h4>
-            <?php
-            $comments = $comment->getComments($t->id);
-            if (!empty($comments)): ?>
-                <ul>
-                    <?php foreach ($comments as $c): ?>
-
-                        <li>
-                            <strong><?php echo htmlspecialchars($c['username']); ?>:</strong>
-                            <?php echo htmlspecialchars($c['comment']); ?>
-                            <em>(<?php echo TimeFormatter::formatTimestamp(strtotime($c['commented_at'])); ?>)</em>
-                        </li>
-
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p>No comments yet. Be the first to comment!</p>
-            <?php endif; ?>
-
-            <!-------------- Add comments  ---------------->
-            <form method="post">
-                <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-                <input type="hidden" name="topic_id" value="<?php echo htmlspecialchars($t->id); ?>">
-                <button type="submit">Add Comment</button>
-            </form>
-        </div>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p>No topics available. Create a topic to get started!</p>
-<?php endif; ?>
 </body>
 </html>
