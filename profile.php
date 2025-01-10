@@ -61,6 +61,8 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
 <html>
 <head>
     <title>Your Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
     <?php if ($currentTheme == 'dark'): ?>
         <style>
             body {
@@ -77,50 +79,62 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
     <?php endif; ?>
 </head>
 <body>
-<h1><?php echo htmlspecialchars($username); ?>'s Profile</h1>
-<nav>
-    <a href="create_topic.php">Dashboard</a>
-    <a href="vote.php">Topics</a>
-    <a href="profile.php">Profile</a>
-    <a href="create_topic.php?logout=true"">Logout</a>
-</nav>
 
-<p>Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
-<p>Total User Votes: <?php echo htmlspecialchars($totalUserVotes); ?></p>
+    <div class="container mt-5">
 
-<h2>Your Topics</h2>
-<?php if (!empty($createdTopics)): ?>
-    <ul>
+        <div class="border border-5 position-relative">
+            <h1 class="text-secondary text-center mb-0 p-4 title-text"><?php echo htmlspecialchars(captialize($username)); ?>'s Profile</h1>
+        </div>
+        <br>
 
-        <?php foreach ($createdTopics as $t): ?>
-            <li><?php echo htmlspecialchars($t['title']); ?> - <?php echo htmlspecialchars($t['description']); ?></li>
-        <?php endforeach; ?>
+        <nav class="text-center">
+            <a class="large-nav-links p-2" href="create_topic.php">Dashboard</a>
+            <a class="large-nav-links p-2" href="vote.php">Topics</a>
+            <a class="large-nav-links p-2" href="profile.php">Profile</a>
+            <a class="large-nav-links p-2" href="create_topic.php?logout=true"">Logout</a>
+        </nav>
 
-    </ul>
-<?php else: ?>
-    <p>No topics created yet.</p>
-<?php endif; ?>
+        <p>Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
+        <p>Total User Votes: <?php echo htmlspecialchars($totalUserVotes); ?></p>
 
-<h2>Voting History</h2>
-<?php if (!empty($votingUserHistory)): ?>
-    <ul>
-        <?php foreach ($votingUserHistory as $userHis): ?>
+        <h2>Your Topics</h2>
+        <?php if (!empty($createdTopics)): ?>
+            <ul>
 
-            <li>
-                <p>Title: <?php echo htmlspecialchars($userHis['title']); ?></p>
-                <p>Description: <?php echo htmlspecialchars($userHis['description']); ?></p>
-                <p>Vote: <?php echo htmlspecialchars($userHis['vote_type']); ?></p>
-            </li>
+                <?php foreach ($createdTopics as $t): ?>
+                    <li><?php echo htmlspecialchars($t['title']); ?> - <?php echo htmlspecialchars($t['description']); ?></li>
+                <?php endforeach; ?>
 
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>You have not voted on any topics yet. Please vote on topics to see some results!</p>
-<?php endif; ?>
+            </ul>
+        <?php else: ?>
+            <p>No topics created yet.</p>
+        <?php endif; ?>
 
-<div class="theme-toggle">
-    <p>Themes:</p>
-    <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a>
-</div>
+        <h2>Voting History</h2>
+        <?php if (!empty($votingUserHistory)): ?>
+            <ul>
+                <?php foreach ($votingUserHistory as $userHis): ?>
+
+                    <li>
+                        <p>Title: <?php echo htmlspecialchars($userHis['title']); ?></p>
+                        <p>Description: <?php echo htmlspecialchars($userHis['description']); ?></p>
+                        <p>Vote: <?php echo htmlspecialchars($userHis['vote_type']); ?></p>
+                    </li>
+
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>You have not voted on any topics yet. Please vote on topics to see some results!</p>
+        <?php endif; ?>
+
+        <div class="theme-toggle">
+            <p>Themes:</p>
+            <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a>
+        </div>
+
+
+
+    </div>
+
 </body>
 </html>
