@@ -94,7 +94,7 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
             <a class="large-nav-links p-2" href="create_topic.php?logout=true"">Logout</a>
         </nav>
 
-        <p>Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
+        <p class="text-secondary">Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
         <p>Total User Votes: <?php echo htmlspecialchars($totalUserVotes); ?></p>
 
         <h2>Your Topics</h2>
