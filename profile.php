@@ -63,20 +63,6 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
     <title>Your Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles/main.css" rel="stylesheet">
-    <?php if ($currentTheme == 'dark'): ?>
-        <style>
-            body {
-                background-color: black;
-                color: white;
-            }
-        </style>
-    <?php else: ?>
-        <style>
-            body {
-                background-color: white;
-                color: black;
-        </style>
-    <?php endif; ?>
 </head>
 <body>
 
@@ -94,45 +80,47 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
             <a class="large-nav-links p-2" href="create_topic.php?logout=true"">Logout</a>
         </nav>
 
-        <p class="text-secondary">Total Topics Created: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
-        <p>Total User Votes: <?php echo htmlspecialchars($totalUserVotes); ?></p>
+        <div class="text-center border border-5 p-4 mt-4 big-label-text">
+            <p class="text-secondary">Total Topics Created by User: <?php echo htmlspecialchars($totalUserTopicsCreated); ?></p>
+            <p class="text-secondary">Total User Votes: <?php echo htmlspecialchars($totalUserVotes); ?></p>
+        </div>
 
-        <h2>Your Topics</h2>
+        <br>
+        <h2 class="text-secondary big-label-text">Your Topics: </h2>
         <?php if (!empty($createdTopics)): ?>
-            <ul>
+
+            <div class="border border-5 p-4 mt-4 w-50 mx-auto">
 
                 <?php foreach ($createdTopics as $t): ?>
-                    <li><?php echo htmlspecialchars($t['title']); ?> - <?php echo htmlspecialchars($t['description']); ?></li>
+
+                    <p class="regular-text"><strong> Title: </strong><?php echo htmlspecialchars($t['title']); ?> </p>
+                    <p class="regular-text"><strong> Description: </strong> <?php echo htmlspecialchars($t['description']); ?> </p>
+
                 <?php endforeach; ?>
 
-            </ul>
+            </div>
+
         <?php else: ?>
             <p>No topics created yet.</p>
         <?php endif; ?>
 
-        <h2>Voting History</h2>
+        <br>
+        <h2 class="text-secondary big-label-text">Voting History:</h2>
         <?php if (!empty($votingUserHistory)): ?>
-            <ul>
+
                 <?php foreach ($votingUserHistory as $userHis): ?>
 
-                    <li>
-                        <p>Title: <?php echo htmlspecialchars($userHis['title']); ?></p>
-                        <p>Description: <?php echo htmlspecialchars($userHis['description']); ?></p>
-                        <p>Vote: <?php echo htmlspecialchars($userHis['vote_type']); ?></p>
-                    </li>
+                    <div class="border border-5 p-4 mt-4 mx-auto w-50 5rem">
+                        <p class="regular-text"><strong>Title: </strong> <?php echo htmlspecialchars($userHis['title']); ?></p>
+                        <p class="regular-text"><strong>Description: </strong> <?php echo htmlspecialchars($userHis['description']); ?></p>
+                        <p class="regular-text"><strong class="text-primary">Vote: </strong> <?php echo htmlspecialchars($userHis['vote_type']); ?></p>
+                    </div>
 
                 <?php endforeach; ?>
-            </ul>
+
         <?php else: ?>
             <p>You have not voted on any topics yet. Please vote on topics to see some results!</p>
         <?php endif; ?>
-
-        <div class="theme-toggle">
-            <p>Themes:</p>
-            <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a>
-        </div>
-
-
 
     </div>
 

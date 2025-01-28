@@ -81,21 +81,6 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
 <html>
 <head>
     <title>Create Topic Dashboard</title>
-    <?php if ($currentTheme == 'dark'): ?>
-        <style>
-            body {
-                background-color: black;
-                color: white;
-            }
-        </style>
-    <?php else: ?>
-        <style>
-            body {
-                background-color: white;
-                color: black;
-            }
-        </style>
-    <?php endif; ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles/main.css" rel="stylesheet">
 </head>
@@ -131,10 +116,6 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true')
             <input class="btn btn-primary mt-5 mb-1 btn-xl" type="submit" value="Create Topic">
         </form>
 
-        <div class="text-secondary">
-            <p>Themes: <a href="?theme=light">Light</a> | <a href="?theme=dark">Dark</a> </p>
-
-        </div>
 
     </div>
 </body>
